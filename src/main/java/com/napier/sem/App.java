@@ -1,24 +1,10 @@
 package com.napier.sem;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class App
 {
-    public static void main(String[] args)
-    {
-        // Create new Application
-        App a = new App();
-
-        // Connect to database
-        a.connect();
-        // Get Employee
-        Employee emp = a.getEmployee(255530);
-        // Display results
-        a.displayEmployee(emp);
-
-        // Disconnect from database
-        a.disconnect();
-    }
     /**
      * Connection to MySQL database.
      */
@@ -65,24 +51,6 @@ public class App
         }
     }
 
-    /**
-     * Disconnect from the MySQL database.
-     */
-    public void disconnect()
-    {
-        if (con != null)
-        {
-            try
-            {
-                // Close connection
-                con.close();
-            }
-            catch (Exception e)
-            {
-                System.out.println("Error closing connection to database");
-            }
-        }
-    }
     public Employee getEmployee(int ID)
     {
         try
@@ -116,6 +84,7 @@ public class App
             return null;
         }
     }
+
     public void displayEmployee(Employee emp)
     {
         if (emp != null)
@@ -129,5 +98,82 @@ public class App
                             + emp.dept_name + "\n"
                             + "Manager: " + emp.manager + "\n");
         }
+    }
+
+    /**
+     * Gets all the current employees and salaries.
+     * @return A list of all employees and salaries, or null if there is an error.
+     */
+    public ArrayList<Employee> getAllSalaries()
+    {
+        try
+        {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary "
+                            + "FROM employees, salaries "
+                            + "WHERE employees.emp_no = salaries.emp_no AND salaries.to_date = '9999-01-01' "
+                            + "ORDER BY employees.emp_no ASC";
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Extract employee information
+            ArrayList<Employee> employees = new ArrayList<Employee>();
+            while (rset.next())
+            {
+                Employee emp = new Employee();
+                emp.emp_no = rset.getInt("employees.emp_no");
+                emp.first_name = rset.getString("employees.first_name");
+                emp.last_name = rset.getString("employees.last_name");
+                emp.salary = rset.getInt("salaries.salary");
+                employees.add(emp);
+            }
+            return employees;
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get salary details");
+            return null;
+        }
+    }
+
+    /**
+     * Disconnect from the MySQL database.
+     */
+    public void disconnect()
+    {
+        if (con != null)
+        {
+            try
+            {
+                // Close connection
+                con.close();
+            }
+            catch (Exception e)
+            {
+                System.out.println("Error closing connection to database");
+            }
+        }
+    }
+    public static void main(String[] args)
+    {
+        // Create new Application
+        App a = new App();
+
+        // Connect to database
+        a.connect();
+        // Get Employee
+        Employee emp = a.getEmployee(255530);
+        // Extract employee salary information
+        ArrayList<Employee> employees = a.getAllSalaries();
+        // Display results
+        a.displayEmployee(emp);
+        // Test the size of the returned data - should be 240124
+        System.out.println(employees.size());
+
+        // Disconnect from database
+        a.disconnect();
     }
 }
