@@ -8,4 +8,4 @@
 
 - Release [![Releases](https://img.shields.io/github/release/phyusintun/sem/all.svg?style=flat-square)](https://github.com/phyusintun/sem/releases)
 
--Code Coverage [![codecov](https://codecov.io/gh/phyusintun/sem/branch/main/graph/badge.svg?token=DB7D81G40O)](https://codecov.io/gh/phyusintun/sem)
+-Code Coverage [![codecov](https://codecov.io/gh/phyusintun/sem/branch/master/graph/badge.svg?token=DB7D81G40O)](https://codecov.io/gh/phyusintun/sem)
